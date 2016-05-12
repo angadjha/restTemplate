@@ -2,10 +2,16 @@ package com.example.service;
 
 import com.example.model.TossRequest;
 import com.example.model.TossResponse;
+import com.example.util.QueryParamGenerator;
 import org.json.simple.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -24,12 +30,14 @@ public class TossPayService {
 
     RestTemplate restTemplate = new RestTemplate();
 
+    QueryParamGenerator queryParamGenerator = new QueryParamGenerator();
+
     public TossResponse postForEntityTossPayment(TossRequest request) {
 
-        ResponseEntity<TossResponse> exchange = restTemplate.postForEntity(PAY_REQUEST_URL, request, TossResponse.class);
+        ResponseEntity<TossResponse> tossResponseResponseEntity = restTemplate.postForEntity(PAY_REQUEST_URL, request, TossResponse.class);
 
-        TossResponse response = exchange.getBody();
-        System.out.println("exchange.getStatusCode() = " + exchange.getStatusCode());
+        TossResponse response = tossResponseResponseEntity.getBody();
+        System.out.println("exchange.getStatusCode() = " + tossResponseResponseEntity.getStatusCode());
         System.out.println("response = " + response.toString());
 
         return response;
@@ -38,6 +46,23 @@ public class TossPayService {
     public TossResponse postForObjectTossPayment(TossRequest request) {
 
         TossResponse response = restTemplate.postForObject(PAY_REQUEST_URL, request, TossResponse.class);
+        System.out.println("response = " + response.toString());
+
+        return response;
+    }
+
+    public TossResponse exchangeTossPayment(TossRequest request) {
+
+        UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(PAY_REQUEST_URL)
+                .queryParams(queryParamGenerator.generate(request))
+                .build();
+
+        ResponseEntity<TossResponse> exchange = restTemplate.exchange(uriComponents.toUri(), HttpMethod.POST, HttpEntity.EMPTY, TossResponse.class);
+
+        HttpStatus statusCode = exchange.getStatusCode();
+        TossResponse response = exchange.getBody();
+
+        System.out.println("statusCode = " + statusCode);
         System.out.println("response = " + response.toString());
 
         return response;

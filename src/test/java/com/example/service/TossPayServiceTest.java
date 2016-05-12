@@ -55,7 +55,18 @@ public class TossPayServiceTest {
         Assert.assertEquals(tossResponse.getPayToken(), PAY_TOKEN);
     }
 
+    @Test
+    public void exchangeTossPayment() throws Exception {
 
+        //1.Given 2.When
+        TossResponse tossResponse = payService.exchangeTossPayment(request);
+
+        //3.Then
+        Assert.assertEquals(tossResponse.getCode(), PAY_OK);
+        Assert.assertNull(tossResponse.getCheckoutPage());
+        Assert.assertEquals(tossResponse.getPayToken(), PAY_TOKEN);
+    }
+    
     @Test
     public void tosspaySample() throws Exception {
         payService.tosspaySample();
