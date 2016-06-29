@@ -29,8 +29,10 @@ repositories {
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.googlecode.json-simple:json-simple:1.1')
-	compile('commons-httpclient:commons-httpclient:3.1')
-	testCompile('org.springframework.boot:spring-boot-starter-test') 
+//	compile('commons-httpclient:commons-httpclient:3.1')
+	compile('org.apache.httpcomponents:httpclient:4.3.1')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+
 }
 
 
